@@ -255,9 +255,5 @@ This project was developed as an academic project.
 
 This project is developed for educational purposes.
 
-## Contact
 
-For any queries or support, please contact:
-- Email: info@radiancesalon.com
-- Phone: +1 234 567 8900
 # radiance-salon-manager
