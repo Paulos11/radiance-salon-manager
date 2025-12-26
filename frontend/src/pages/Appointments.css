@@ -1,0 +1,54 @@
+.appointments-page {
+  background-color: var(--bg-cream);
+}
+
+.appointments-filter {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xl);
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  border: 2px solid var(--primary-teal);
+  background-color: transparent;
+  color: var(--primary-teal);
+  border-radius: var(--radius-md);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background-color: var(--primary-teal-light);
+  color: white;
+  border-color: var(--primary-teal-light);
+}
+
+.filter-btn.active {
+  background-color: var(--primary-teal);
+  color: white;
+}
+
+.appointments-list {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.no-appointments {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background-color: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.no-appointments p {
+  font-size: 18px;
+  color: var(--text-gray);
+  margin-bottom: var(--spacing-lg);
+}
