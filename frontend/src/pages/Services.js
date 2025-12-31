@@ -4,7 +4,7 @@ import { servicesAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import ServiceCard from '../components/ServiceCard';
 import { toast } from 'react-toastify';
-import './Services.css';
+import Button from '../components/ui/Button';
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -60,28 +60,33 @@ const Services = () => {
 
   if (loading) {
     return (
-      <div className="page">
-        <div className="container">
-          <div className="spinner"></div>
-        </div>
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="page services-page">
-      <div className="container">
-        <h1 className="page-title">Our Services</h1>
-        <p className="page-subtitle">
-          Discover our wide range of professional beauty and wellness services
-        </p>
+    <div className="bg-neutral-50 min-h-screen pt-20 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-neutral-900 mb-4">Our Services</h1>
+          <p className="text-neutral-600 max-w-2xl mx-auto">
+            Discover our wide range of professional beauty and wellness services designed to help you look and feel your absolute best.
+          </p>
+        </div>
 
-        <div className="category-filter">
+        {/* Category Filter */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
           {categories.map((category) => (
             <button
               key={category}
-              className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                selectedCategory === category
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200'
+              }`}
             >
               {category === 'all' ? 'All Services' : category}
             </button>
@@ -89,9 +94,18 @@ const Services = () => {
         </div>
 
         {filteredServices.length === 0 ? (
-          <p className="text-center text-gray">No services available in this category</p>
+          <div className="text-center py-12">
+            <p className="text-neutral-500 text-lg">No services available in this category</p>
+            <Button 
+              variant="outline" 
+              className="mt-4"
+              onClick={() => setSelectedCategory('all')}
+            >
+              View All Services
+            </Button>
+          </div>
         ) : (
-          <div className="services-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredServices.map((service) => (
               <ServiceCard
                 key={service.id}

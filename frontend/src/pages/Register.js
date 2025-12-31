@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import './Auth.css';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import Card from '../components/ui/Card';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -55,123 +57,118 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-card auth-card-wide">
-          <h1 className="auth-title">Create Account</h1>
-          <p className="auth-subtitle">Join Radiance Salon today</p>
+    <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-serif font-bold text-neutral-900">
+          Create Account
+        </h2>
+        <p className="mt-2 text-center text-sm text-neutral-600">
+          Join Radiance Salon today
+        </p>
+      </div>
 
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Full Name *</label>
-                <input
-                  type="text"
-                  name="full_name"
-                  className="form-input"
-                  value={formData.full_name}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your full name"
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Phone Number *</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  className="form-input"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your phone number"
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Email Address *</label>
-              <input
-                type="email"
-                name="email"
-                className="form-input"
-                value={formData.email}
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
+        <Card className="shadow-lg">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label="Full Name *"
+                type="text"
+                name="full_name"
+                value={formData.full_name}
                 onChange={handleChange}
                 required
-                placeholder="Enter your email"
+                placeholder="Enter your full name"
+                containerClassName="mb-0"
+              />
+
+              <Input
+                label="Phone Number *"
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                placeholder="Enter your phone number"
+                containerClassName="mb-0"
               />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Password *</label>
-                <input
-                  type="password"
-                  name="password"
-                  className="form-input"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  placeholder="Create a password"
-                />
-              </div>
+            <Input
+              label="Email Address *"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="Enter your email"
+            />
 
-              <div className="form-group">
-                <label className="form-label">Confirm Password *</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  className="form-input"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  placeholder="Confirm your password"
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label="Password *"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="Create a password"
+                containerClassName="mb-0"
+              />
+
+              <Input
+                label="Confirm Password *"
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                placeholder="Confirm your password"
+                containerClassName="mb-0"
+              />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Date of Birth</label>
-                <input
-                  type="date"
-                  name="date_of_birth"
-                  className="form-input"
-                  value={formData.date_of_birth}
-                  onChange={handleChange}
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label="Date of Birth"
+                type="date"
+                name="date_of_birth"
+                value={formData.date_of_birth}
+                onChange={handleChange}
+                containerClassName="mb-0"
+              />
 
-              <div className="form-group">
-                <label className="form-label">Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  className="form-input"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="Enter your address"
-                />
-              </div>
+              <Input
+                label="Address"
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter your address"
+                containerClassName="mb-0"
+              />
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="btn btn-primary btn-block"
-              disabled={loading}
+              variant="primary"
+              className="w-full justify-center shadow-md py-3"
+              isLoading={loading}
+              size="lg"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
-            </button>
+              Create Account
+            </Button>
           </form>
 
-          <p className="auth-footer">
-            Already have an account?{' '}
-            <Link to="/login" className="auth-link">
-              Login here
-            </Link>
-          </p>
-        </div>
+          <div className="mt-6 border-t border-neutral-100 pt-6">
+            <p className="text-center text-sm text-neutral-600">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-primary hover:text-primary-dark transition-colors">
+                Login here
+              </Link>
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );

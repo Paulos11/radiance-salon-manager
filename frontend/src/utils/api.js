@@ -56,4 +56,11 @@ export const staffAPI = {
   getByService: (service_id) => api.get(`/staff/service/${service_id}`)
 };
 
+// Reviews API
+export const reviewsAPI = {
+  create: (data) => api.post('/reviews', data),
+  getAll: (params) => api.get('/reviews', { params }),
+  getById: (id) => api.get(`/reviews/${id}`)
+};
+
 export default api;

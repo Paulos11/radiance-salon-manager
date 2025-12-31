@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { appointmentsAPI, servicesAPI } from '../utils/api';
+import { appointmentsAPI } from '../utils/api';
 import AppointmentCard from '../components/AppointmentCard';
 import { toast } from 'react-toastify';
-import './Dashboard.css';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
 
 const Dashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -18,94 +19,96 @@ const Dashboard = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
-    try {
-      if (user.role === 'customer') {
-        const response = await appointmentsAPI.getUpcoming();
-        if (response.data.success) {
-          setUpcomingAppointments(response.data.data);
+    const fetchDashboardData = async () => {
+      try {
+        if (user.role === 'customer') {
+          const response = await appointmentsAPI.getUpcoming();
+          if (response.data.success) {
+            setUpcomingAppointments(response.data.data);
+          }
         }
-      }
 
-      const allAppts = await appointmentsAPI.getAll();
-      if (allAppts.data.success) {
-        const appointments = allAppts.data.data;
-        setStats({
-          totalAppointments: appointments.length,
-          pendingAppointments: appointments.filter(a => a.status === 'pending').length,
-          completedAppointments: appointments.filter(a => a.status === 'completed').length
-        });
+        const allAppts = await appointmentsAPI.getAll();
+        if (allAppts.data.success) {
+          const appointments = allAppts.data.data;
+          setStats({
+            totalAppointments: appointments.length,
+            pendingAppointments: appointments.filter(a => a.status === 'pending').length,
+            completedAppointments: appointments.filter(a => a.status === 'completed').length
+          });
+        }
+      } catch (error) {
+        toast.error('Error loading dashboard data');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      toast.error('Error loading dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchDashboardData();
+  }, [user.role]);
 
   if (loading) {
     return (
-      <div className="page">
-        <div className="container">
-          <div className="spinner"></div>
-        </div>
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="page dashboard-page">
-      <div className="container">
-        <h1 className="page-title">
-          Welcome back, {user.full_name}!
-        </h1>
-
-        <div className="dashboard-stats">
-          <div className="stat-card">
-            <div className="stat-icon">📅</div>
-            <div className="stat-content">
-              <h3>{stats.totalAppointments}</h3>
-              <p>Total Appointments</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">⏳</div>
-            <div className="stat-content">
-              <h3>{stats.pendingAppointments}</h3>
-              <p>Pending</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">✅</div>
-            <div className="stat-content">
-              <h3>{stats.completedAppointments}</h3>
-              <p>Completed</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-serif font-bold text-neutral-900">
+            Welcome back, {user.full_name}!
+          </h1>
+          <p className="mt-2 text-neutral-600">Here's an overview of your beauty journey with us.</p>
         </div>
 
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2>Upcoming Appointments</h2>
-            <Link to="/appointments" className="btn btn-outline btn-sm">
-              View All
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <Card className="flex items-center p-6 bg-white shadow-sm border border-neutral-100 hover:shadow-md transition-shadow">
+            <div className="p-3 rounded-full bg-primary/10 text-2xl mr-4">📅</div>
+            <div>
+              <h3 className="text-2xl font-bold text-neutral-900">{stats.totalAppointments}</h3>
+              <p className="text-sm text-neutral-500 font-medium">Total Appointments</p>
+            </div>
+          </Card>
+
+          <Card className="flex items-center p-6 bg-white shadow-sm border border-neutral-100 hover:shadow-md transition-shadow">
+            <div className="p-3 rounded-full bg-warning/10 text-2xl mr-4">⏳</div>
+            <div>
+              <h3 className="text-2xl font-bold text-neutral-900">{stats.pendingAppointments}</h3>
+              <p className="text-sm text-neutral-500 font-medium">Pending</p>
+            </div>
+          </Card>
+
+          <Card className="flex items-center p-6 bg-white shadow-sm border border-neutral-100 hover:shadow-md transition-shadow">
+            <div className="p-3 rounded-full bg-success/10 text-2xl mr-4">✅</div>
+            <div>
+              <h3 className="text-2xl font-bold text-neutral-900">{stats.completedAppointments}</h3>
+              <p className="text-sm text-neutral-500 font-medium">Completed</p>
+            </div>
+          </Card>
+        </div>
+
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-serif font-bold text-neutral-900">Upcoming Appointments</h2>
+            <Link to="/appointments">
+              <Button variant="outline" size="sm">View All</Button>
             </Link>
           </div>
 
           {upcomingAppointments.length === 0 ? (
-            <div className="empty-state">
-              <p>No upcoming appointments</p>
-              <Link to="/services" className="btn btn-primary">
-                Book an Appointment
+            <Card className="text-center py-12">
+              <div className="text-5xl mb-4">📅</div>
+              <p className="text-lg text-neutral-600 mb-6">No upcoming appointments scheduled.</p>
+              <Link to="/services">
+                <Button variant="primary">Book an Appointment</Button>
               </Link>
-            </div>
+            </Card>
           ) : (
-            <div className="appointments-grid">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingAppointments.slice(0, 3).map((appointment) => (
                 <AppointmentCard key={appointment.id} appointment={appointment} />
               ))}
@@ -113,23 +116,29 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="dashboard-actions">
-          <Link to="/services" className="action-card">
-            <div className="action-icon">💇</div>
-            <h3>Browse Services</h3>
-            <p>Explore our wide range of beauty services</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Link to="/services" className="group">
+            <Card className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary group-hover:-translate-y-1">
+              <div className="text-4xl mb-4 text-primary">💇</div>
+              <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-primary transition-colors">Browse Services</h3>
+              <p className="text-neutral-600 text-sm">Explore our wide range of beauty services and find your perfect treatment.</p>
+            </Card>
           </Link>
 
-          <Link to="/appointments" className="action-card">
-            <div className="action-icon">📋</div>
-            <h3>My Appointments</h3>
-            <p>View and manage your appointments</p>
+          <Link to="/appointments" className="group">
+            <Card className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-secondary group-hover:-translate-y-1">
+              <div className="text-4xl mb-4 text-secondary">📋</div>
+              <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-secondary transition-colors">My Appointments</h3>
+              <p className="text-neutral-600 text-sm">View your booking history, manage upcoming visits, and reschedule if needed.</p>
+            </Card>
           </Link>
 
-          <Link to="/profile" className="action-card">
-            <div className="action-icon">👤</div>
-            <h3>My Profile</h3>
-            <p>Update your personal information</p>
+          <Link to="/profile" className="group">
+            <Card className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-neutral-400 group-hover:-translate-y-1">
+              <div className="text-4xl mb-4 text-neutral-400">👤</div>
+              <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-neutral-600 transition-colors">My Profile</h3>
+              <p className="text-neutral-600 text-sm">Update your personal information, contact details, and preferences.</p>
+            </Card>
           </Link>
         </div>
       </div>

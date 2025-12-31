@@ -16,19 +16,16 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
-  // Configure axios defaults
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      loadUser();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
+  const logout = React.useCallback(() => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    delete axios.defaults.headers.common['Authorization'];
+  }, []);
 
-  const loadUser = async () => {
+  const loadUser = React.useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/auth/profile`);
       if (response.data.success) {
@@ -40,7 +37,17 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL, logout]);
+
+  // Configure axios defaults
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      loadUser();
+    } else {
+      setLoading(false);
+    }
+  }, [token, loadUser]);
 
   const login = async (email, password) => {
     try {
@@ -85,13 +92,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
-  };
-
   const updateProfile = async (profileData) => {
     try {
       const response = await axios.put(`${API_URL}/auth/profile`, profileData);
@@ -114,6 +114,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    fetchUser: loadUser,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isStaff: user?.role === 'staff',
